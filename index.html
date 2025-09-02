@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Portfolio Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: maroon;
+    }
+    .portfolio, .generator {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: maroon;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: darkred;
+    }
+    .generated-portfolio {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-left: 4px solid maroon;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+
+  <div class="generator">
+    <h2>Create Your Own Portfolio</h2>
+    <form id="portfolioForm">
+      <label>Name: <input type="text" id="name" required></label>
+      <label>Age: <input type="number" id="age" required></label>
+      <label>Skills: <input type="text" id="skills" placeholder="e.g. HTML, CSS, Python"></label>
+      <label>Projects: <textarea id="projects" placeholder="List your projects"></textarea></label>
+      <label>Extra Curricular Activities: <textarea id="activities" placeholder="e.g. Sports, Music"></textarea></label>
+      <label>Contact: <input type="email" id="contact" placeholder="your@email.com"></label>
+      <button type="button" onclick="generatePortfolio()">Save Portfolio</button>
+    </form>
+
+
+    <h2>Saved Portfolios</h2>
+    <div id="output" class="generated-portfolio"></div>
+  </div>
+
+
+  <script>
+    // Load saved data on page load
+    window.onload = function() {
+      displayPortfolios();
+    };
+
+
+    function generatePortfolio() {
+      const name = document.getElementById("name").value;
+      const age = document.getElementById("age").value;
+      const skills = document.getElementById("skills").value;
+      const projects = document.getElementById("projects").value;
+      const activities = document.getElementById("activities").value;
+      const contact = document.getElementById("contact").value;
+
+
+      // Create portfolio object
+      const portfolio = {
+        name,
+        age,
+        skills,
+        projects,
+        activities,
+        contact
+      };
+
+
+      // Get existing portfolios from localStorage
+      let portfolios = JSON.parse(localStorage.getItem("portfolios")) || [];
+
+
+      // Add new portfolio
+      portfolios.push(portfolio);
+
+
+      // Save back to localStorage
+      localStorage.setItem("portfolios", JSON.stringify(portfolios));
+
+
+      // Refresh display
+      displayPortfolios();
+
+
+      // Reset form
+      document.getElementById("portfolioForm").reset();
+    }
+
+
+    function displayPortfolios() {
+      const outputDiv = document.getElementById("output");
+      outputDiv.innerHTML = ""; // Clear existing
+      let portfolios = JSON.parse(localStorage.getItem("portfolios")) || [];
+
+
+      portfolios.forEach((p, index) => {
+        outputDiv.innerHTML += `
+          <div style="margin-bottom:15px; padding:10px; border:1px solid #ccc; border-radius:5px;">
+            <h3>${p.name}'s Portfolio</h3>
+            <p><strong>Age:</strong> ${p.age}</p>
+            <p><strong>Skills:</strong> ${p.skills}</p>
+            <p><strong>Projects:</strong> ${p.projects}</p>
+            <p><strong>Extra Curricular Activities:</strong> ${p.activities}</p>
+            <p><strong>Contact:</strong> ${p.contact}</p>
+            <button onclick="deletePortfolio(${index})">Delete</button>
+          </div>
+        `;
+      });
+    }
+
+
+    function deletePortfolio(index) {
+      let portfolios = JSON.parse(localStorage.getItem("portfolios")) || [];
+      portfolios.splice(index, 1); // Remove selected
+      localStorage.setItem("portfolios", JSON.stringify(portfolios));
+      displayPortfolios();
+    }
+  </script>
+
+
+</body>
+</html>
